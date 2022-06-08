@@ -14,7 +14,7 @@ cap.set(4,hCam)
 detector = htm.handdetector(maxHands=1)
 wScr, hScr = autopy.screen.size() 
 #1536.0 864.0
-frameR=100  
+frameR=100
 smooth=7
 
 plocX, plocY = 0, 0
@@ -27,6 +27,7 @@ while True:
     img= detector.findHands (img)
     LmList, bbox = detector.Position(img)
     cv2.rectangle (img, (frameR, frameR), (wCam-frameR, hCam-frameR),(255, 0, 255), 2)
+    #cv2.rectangle (img, (frameR+50, frameR), (wCam-frameR-50, hCam-frameR-50),(255, 0, 255), 2)
                                                 
     if len(LmList)!=0:
       x1, y1 = LmList[8][1:]
@@ -38,9 +39,10 @@ while True:
 
 # move
       if fingers[1]==1 and fingers[2] ==0 and fingers[0]==0:
-       x3 =np.interp(x1, (frameR, wCam-frameR), (0, wScr))
-       y3=np.interp(y1, (frameR, hCam-frameR), (0, hScr))
-
+       x3 =np.interp(x1, (frameR+50, wCam-frameR-50), (0, wScr))
+       y3=np.interp(y1, (frameR, hCam-frameR-50), (0, hScr))
+      #  x3 =np.interp(x1, (frameR+50, wCam-frameR-50), (0, wScr))
+      #  y3=np.interp(y1, (frameR, hCam-frameR-50), (0, hScr))
        clocX =plocX +(x3 -plocX) /smooth
        clocY =plocY+(y3 -plocY) /smooth
        
@@ -64,9 +66,9 @@ while True:
    #scroller
       if fingers[0]==0 and fingers[1]==1 and fingers[2]==1 and fingers[3]==1 and fingers[4]==1:
         x1, y1 = LmList[12][1], LmList[12][2]
-        if y1 -prev_y > 5:
+        if y1 -prev_y > 1:#5
                 pyautogui.scroll(150)
-        elif prev_y - y1 > 5:
+        elif prev_y - y1 > 1:
             pyautogui.scroll(-150)
         prev_y = y1
 
