@@ -3,11 +3,11 @@ A virtual mouse that performs mouse operations using hand gestures
 
 ### To run the below mouse in your local system
 
-git clone https://github.com/Jay4Codes/AirTouch.git
+`git clone https://github.com/Jay4Codes/AirTouch.git`
 
-pip install -r requirements.txt
+`pip install -r requirements.txt`
 
-python gesture_mouse.py
+`python gesture_mouse.py`
 
 ## SVC
 For every new user, we ask the user to record hand movements through their webcam.
