@@ -24,15 +24,16 @@ Usage - formats:
                                  yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
                                  yolov5s_paddle_model       # PaddlePaddle
 """
-import numpy as np
 import argparse
 import os
 import platform
 import sys
+import time
 from pathlib import Path
+
+import numpy as np
 import pyautogui
 import torch
-import time
 
 prev_y=0
 prev_x=0
@@ -201,25 +202,38 @@ def run(
          
         ###############scroll 174.83009338378906  129.1793975830078
          if int(pred[0][0][5])==0:
-            if y1>129 and y1<150 :#5
+            if y1<240  :                # 129 and y1<150 :#5
                     pyautogui.scroll(150)
-            elif y1>170 :
+            elif y1>280 :
                 pyautogui.scroll(-150)
-
+      
          elif  int(pred[0][0][5])==6:
             #  x3 =np.interp(x1,[10, 316], [0, 1919])
             #  y3=np.interp(y1, [100, 320], [0, 1079])
-             x3 =np.interp(x1,[254, 308], [0, 1919])
-             y3=np.interp(y1, [102,259], [0, 1079])
-          
+            #  x3 =np.interp(x1,[254, 308], [25, 1919])        #2m
+            #  y3=np.interp(y1, [102,259],[15, 1060] )
+             x3 =np.interp(x1,[252,323], [25, 1919])        #4m
+             y3=np.interp(y1, [223,255], [15, 1060])
+            
             #  clocX =plocX +(x3 -plocX) /smooth
             #  clocY =plocY+(y3 -plocY) /smooth
         
              pyautogui.moveTo(1919-x3,y3)
+            
 
          elif  int(pred[0][0][5])==5:
                 pyautogui.click(clicks=1)
                 time.sleep(0.5)
+
+         elif int(pred[0][0][5])==4:
+                pyautogui.click(clicks=2)
+                time.sleep(0.5)
+
+         elif int(pred[0][0][5])==1:
+                pyautogui.click(button='right')
+                time.sleep(0.5)
+
+        
          
         
          
@@ -372,5 +386,6 @@ def main(opt):
 
 
 if __name__ == "__main__":
+    prev_y=0
     opt = parse_opt()
     main(opt)
