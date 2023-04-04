@@ -41,7 +41,7 @@ frameR=500
 
 wCam,hCam=640,480
 wScr, hScr = pyautogui.size() 
-smooth=20
+smooth=7
 
 plocX, plocY = 0, 0
 clocX,clocY = 0, 0 
@@ -89,6 +89,12 @@ def run(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
+        prev_y=0,
+        prev_x=0,
+        plocX=0,
+        plocY = 0,
+       clocX=0,
+       clocY=0,
 ):
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
@@ -142,46 +148,13 @@ def run(
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         
 
-        #1m 37206.793772652745
-        # 1.5 25196.20549751306
-        #2   15088.206841632724
-        #2.5 8918.488970363047
-        #3 5993.404991475865
-        #3.5  4788.528330050409
-        #4   3625.159403644502
-        #4.5 2816.8003173731267
-        #5  2323.824745081365
-        #5.5  1785.4304273873568
-        #6  1531.5846005678177
-        # 6.5 1353.5318495333195
-        # 7 1124.1054723337293
-        #7.5 907.6845705285668
-        #8 829.760952629149
-        # 8.5 777.9814289659262
-        # 9   627.5721289590001
-        #9.5    619.4776391405612
-        #10    555.9847508817911
-        #10.5   482.9527864633128
-        #11  418.677593767643
-        #11.5  395.28936809301376
-        #12    340.7895948663354
-        #12.5  306.612056796439
-        #13    278.0975775094703 
-        #13.5   264.02131308987737
-        #14     247.56858521839604
-        #14.5    215.7092737108469
-        #15  213.95079701952636
 
 
 
         # print(pred)
         try:
          a=pred[0][0].tolist()
-        #  area=(a[0][2] - a[0][0])*(a[0][3] - a[0][1])
-        #  dis=np.interp(area,[213.95079701952636,215.7092737108469,247.56858521839604,264.02131308987737,278.0975775094703 ,306.612056796439,340.7895948663354,395.28936809301376,418.677593767643,482.9527864633128,555.9847508817911,619.4776391405612,627.5721289590001,777.9814289659262,829.760952629149,907.6845705285668,1124.1054723337293, 1353.5318495333195,1531.5846005678177,1785.4304273873568,2323.824745081365,2816.8003173731267,3625.159403644502,4788.528330050409,5993.404991475865,8918.488970363047,15088.206841632724,25196.20549751306,37206.793772652745],[15,14.5,14,13.5,13,12.5,12,11.5,11,10.5,10,9.5,9,8.5,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1]) 
-        # #  dis=np.interp(area,[1785.770513465628,2122.866810709238,2415.9370627370663,2845.900283211842,3000.195580664091,3466.5579211749136,5236.605146499351,6008.834737229627,7626.754985916603,7821.547527414747,11874.609953677282,18736.116765829967,29915.933580072597,49169.869262947235,117501.17219236493],[8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1])
-        #  print(dis)
-        #  print(area)
+       
         
          x1=a[0]
          y1=a[1]
@@ -190,22 +163,22 @@ def run(
         
         #############mouse
         ##movement
-        #  x3 =np.interp(x1,[10, 316], [0, 1919])
-        #  y3=np.interp(y1, (100, 320), (0, 1079))
-        # #  x3 =np.interp(x1, (frameR+50, wCam-frameR-50), (0, wScr))
-        # #  y3=np.interp(y1, (frameR, hCam-frameR-50), (0, hScr))
+   
          print(x1 ,y1)
-        #  clocX =plocX +(x3 -plocX) /smooth
-        #  clocY =plocY+(y3 -plocY) /smooth
-       
-        #  pyautogui.moveTo(wScr-clocX,clocY)
+
          
         ###############scroll 174.83009338378906  129.1793975830078
+        #  if int(pred[0][0][5])==0:
+        #     if y1<240  :                # 129 and y1<150 :#5
+        #             pyautogui.scroll(150)
+        #     elif y1>280 :
+        #         pyautogui.scroll(-150)
          if int(pred[0][0][5])==0:
-            if y1<240  :                # 129 and y1<150 :#5
+            if y1 -prev_y > 1:#5
                     pyautogui.scroll(150)
-            elif y1>280 :
+            elif prev_y - y1 > 1:
                 pyautogui.scroll(-150)
+            prev_y = y1
       
          elif  int(pred[0][0][5])==6:
             #  x3 =np.interp(x1,[10, 316], [0, 1919])
@@ -215,10 +188,12 @@ def run(
              x3 =np.interp(x1,[252,323], [25, 1919])        #4m
              y3=np.interp(y1, [223,255], [15, 1060])
             
-            #  clocX =plocX +(x3 -plocX) /smooth
-            #  clocY =plocY+(y3 -plocY) /smooth
+             clocX =plocX +(x3 -plocX) /smooth
+             clocY =plocY+(y3 -plocY) /smooth
         
-             pyautogui.moveTo(1919-x3,y3)
+            #  pyautogui.moveTo(1919-x3,y3)  #teleportation
+             pyautogui.moveTo(1919-clocX,clocY)   #much smoother 
+             plocX, plocY =clocX, clocY 
             
 
          elif  int(pred[0][0][5])==5:
@@ -306,9 +281,10 @@ def run(
                     windows.append(p)
                     cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-               
+                # cv2.rectangle(im0,(252,223),(323,255),(0,0,255))
                 cv2.imshow(str(p), im0)
-             
+            #    [252,323]      #4m
+            #  [223,255]
              
                 # 
                 cv2.waitKey(1)  # 1 millisecond
